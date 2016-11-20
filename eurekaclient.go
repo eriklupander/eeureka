@@ -107,7 +107,9 @@ func heartbeat(appName string) {
 	heartbeatAction := HttpAction{
 		Url:    discoveryServerUrl + "/eureka/apps/" + appName + "/" + getLocalIP(),
 		Method: "PUT",
+		ContentType: "application/json;charset=UTF-8",
 	}
+	fmt.Println("Issuing heartbeat to " + heartbeatAction.Url)
 	doHttpRequest(heartbeatAction)
 }
 
