@@ -65,7 +65,7 @@ func Register(appName string, port string, securePort string) {
 		if result {
 			fmt.Println("Registration OK")
 			handleSigterm(appName)
-			startHeartbeat(appName)
+			go startHeartbeat(appName)
 			break
 		} else {
 			fmt.Println("Registration attempt of " + appName + " failed...")
