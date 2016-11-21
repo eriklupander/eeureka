@@ -1,3 +1,26 @@
+/**
+The MIT License (MIT)
+
+Copyright (c) 2016 ErikL
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 package eeureka
 
 import (
@@ -37,11 +60,17 @@ var regTpl = `{
   }
 }`
 
+/**
+ * Registers this application at the Eureka server at @eurekaUrl as @appName running on port(s) @port and/or @securePort.
+ */
 func RegisterAt(eurekaUrl string, appName string, port string, securePort string) {
 	discoveryServerUrl = eurekaUrl
 	Register(appName, port, securePort)
 }
 
+/**
+  Register the application at the default eurekaUrl.
+ */
 func Register(appName string, port string, securePort string) {
 	instanceId = getUUID()
 
@@ -75,13 +104,10 @@ func Register(appName string, port string, securePort string) {
 
 }
 
-func startHeartbeat(appName string) {
-	for {
-		time.Sleep(time.Second * 30)
-		heartbeat(appName)
-	}
-}
-
+/**
+ * Given the supplied appName, this func queries the Eureka API for instances of the appName and returns
+ * them as a EurekaApplication struct.
+ */
 func GetServiceInstances(appName string) (EurekaApplication, error) {
 	var m EurekaServiceResponse
 
@@ -98,8 +124,17 @@ func GetServiceInstances(appName string) (EurekaApplication, error) {
 		err := json.Unmarshal(bytes, &m)
 		if err != nil {
 			fmt.Println("Problem parsing JSON response from Eureka: " + err.Error())
+			return EurekaApplication{}, err
 		}
 		return m.Application, nil
+	}
+}
+
+// Start as goroutine, will loop indefinitely until application exits.
+func startHeartbeat(appName string) {
+	for {
+		time.Sleep(time.Second * 30)
+		heartbeat(appName)
 	}
 }
 
@@ -113,15 +148,15 @@ func heartbeat(appName string) {
 	doHttpRequest(heartbeatAction)
 }
 
-func Deregister(appName string) {
-	fmt.Println("Trying to deregister application...")
+func deregister(appName string) {
+	fmt.Println("Trying to deregister application " + appName + "...")
 	// Deregister
 	deregisterAction := HttpAction{
 		Url:    discoveryServerUrl + "/eureka/apps/" + appName + "/" + getLocalIP(),
 		Method: "DELETE",
 	}
 	doHttpRequest(deregisterAction)
-	fmt.Println("Deregistered application, exiting. Check Eureka...")
+	fmt.Println("Deregistered application " + appName + ", exiting. Check Eureka...")
 }
 
 func getLocalIP() string {
@@ -137,7 +172,7 @@ func getLocalIP() string {
 			}
 		}
 	}
-	return ""
+	panic("Unable to determine local IP address (non loopback). Exiting.")
 }
 
 func getUUID() string {
@@ -150,7 +185,7 @@ func handleSigterm(appName string) {
 	signal.Notify(c, syscall.SIGTERM)
 	go func() {
 		<-c
-		Deregister(appName)
+		deregister(appName)
 		os.Exit(1)
 	}()
 }
