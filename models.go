@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 package eeureka
+
 /**
   Defines a graph of structs that conforms to a part of the return type of the Eureka "get instances for appId", e.g:
 
@@ -29,7 +30,7 @@ package eeureka
 
   The root is the EurekaServiceResponse which contains a single EurekaApplication, which in its turn contains an array
   of EurekaInstance instances.
- */
+*/
 type EurekaServiceResponse struct {
 	Application EurekaApplication `json:"application"`
 }

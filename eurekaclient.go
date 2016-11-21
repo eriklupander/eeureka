@@ -70,7 +70,7 @@ func RegisterAt(eurekaUrl string, appName string, port string, securePort string
 
 /**
   Register the application at the default eurekaUrl.
- */
+*/
 func Register(appName string, port string, securePort string) {
 	instanceId = getUUID()
 
@@ -108,7 +108,7 @@ func Register(appName string, port string, securePort string) {
  * Given the supplied appName, this func queries the Eureka API for instances of the appName and returns
  * them as a EurekaApplication struct.
  */
-func GetServiceInstances(appName string) (EurekaApplication, error) {
+func GetServiceInstances(appName string) ([]EurekaInstance, error) {
 	var m EurekaServiceResponse
 
 	queryAction := HttpAction{
@@ -119,14 +119,14 @@ func GetServiceInstances(appName string) (EurekaApplication, error) {
 	log.Println("Doing queryAction using URL: " + queryAction.Url)
 	bytes, err := executeQuery(queryAction)
 	if err != nil {
-		return EurekaApplication{}, err
+		return nil, err
 	} else {
 		err := json.Unmarshal(bytes, &m)
 		if err != nil {
 			fmt.Println("Problem parsing JSON response from Eureka: " + err.Error())
-			return EurekaApplication{}, err
+			return nil, err
 		}
-		return m.Application, nil
+		return m.Application.Instance, nil
 	}
 }
 
@@ -140,8 +140,8 @@ func startHeartbeat(appName string) {
 
 func heartbeat(appName string) {
 	heartbeatAction := HttpAction{
-		Url:    discoveryServerUrl + "/eureka/apps/" + appName + "/" + getLocalIP(),
-		Method: "PUT",
+		Url:         discoveryServerUrl + "/eureka/apps/" + appName + "/" + getLocalIP(),
+		Method:      "PUT",
 		ContentType: "application/json;charset=UTF-8",
 	}
 	fmt.Println("Issuing heartbeat to " + heartbeatAction.Url)
