@@ -112,9 +112,9 @@ func GetServiceInstances(appName string) ([]EurekaInstance, error) {
 	var m EurekaServiceResponse
 	fmt.Println("Querying eureka for services at: " + discoveryServerUrl + "/eureka/apps/" + appName)
 	queryAction := HttpAction{
-		Url:    discoveryServerUrl + "/eureka/apps/" + appName,
-		Method: "GET",
-		Accept: "application/json;charset=UTF-8",
+		Url:         discoveryServerUrl + "/eureka/apps/" + appName,
+		Method:      "GET",
+		Accept:      "application/json;charset=UTF-8",
 		ContentType: "application/json;charset=UTF-8",
 	}
 	log.Println("Doing queryAction using URL: " + queryAction.Url)

@@ -29,7 +29,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"fmt"
 )
 
 func executeQuery(httpAction HttpAction) ([]byte, error) {
@@ -91,16 +90,10 @@ func buildHttpRequest(httpAction HttpAction) *http.Request {
 	}
 
 	// Add headers
-	fmt.Println("Adding headers: Accept: " + httpAction.Accept + " and Content-Type: " + httpAction.ContentType)
 	req.Header = map[string][]string{
-		"Accept": {httpAction.Accept},
+		"Accept":       {httpAction.Accept},
 		"Content-Type": {httpAction.ContentType},
 	}
-
-
-	//req.Header.Add("Accept", httpAction.Accept)
-	//req.Header.Add("Content-Type", httpAction.ContentType)
-
 	return req
 }
 
