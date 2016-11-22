@@ -115,6 +115,7 @@ func GetServiceInstances(appName string) ([]EurekaInstance, error) {
 		Url:    discoveryServerUrl + "/eureka/apps/" + appName,
 		Method: "GET",
 		Accept: "application/json;charset=UTF-8",
+		ContentType: "application/json;charset=UTF-8",
 	}
 	log.Println("Doing queryAction using URL: " + queryAction.Url)
 	bytes, err := executeQuery(queryAction)
