@@ -38,8 +38,14 @@ type EurekaServiceResponse struct {
 }
 
 // Response for /eureka/apps
+type EurekaApplicationsRootResponse struct {
+	Resp EurekaApplicationsResponse `json:"applications"`
+}
+
 type EurekaApplicationsResponse struct {
-	Applications []EurekaApplication `json:"applications"`
+	Version      string              `json:"versions__delta"`
+	AppsHashcode string              `json:"versions__delta"`
+	Applications []EurekaApplication `json:"application"`
 }
 
 type EurekaApplication struct {

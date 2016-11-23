@@ -141,7 +141,7 @@ func GetServiceInstances(appName string) ([]EurekaInstance, error) {
 
 // Experimental, untested.
 func GetServices() ([]EurekaApplication, error) {
-	var m EurekaApplicationsResponse
+	var m EurekaApplicationsRootResponse
 	fmt.Println("Querying eureka for services at: " + discoveryServerUrl + "/eureka/apps")
 	queryAction := HttpAction{
 		Url:         discoveryServerUrl + "/eureka/apps",
@@ -160,7 +160,7 @@ func GetServices() ([]EurekaApplication, error) {
 			fmt.Println("Problem parsing JSON response from Eureka: " + err.Error())
 			return nil, err
 		}
-		return m.Applications, nil
+		return m.Resp.Applications, nil
 	}
 }
 
