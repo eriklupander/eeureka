@@ -162,6 +162,7 @@ func deregister(appName string) {
 	// Deregister
 	deregisterAction := HttpAction{
 		Url:    discoveryServerUrl + "/eureka/apps/" + appName + "/" + getLocalIP(),
+		ContentType: "application/json;charset=UTF-8",
 		Method: "DELETE",
 	}
 	doHttpRequest(deregisterAction)
