@@ -46,12 +46,19 @@ var regTpl = `{
     "ipAddr":"${ipAddress}",
     "vipAddress":"${appName}",
     "status":"UP",
-    "port":"${port}",
-    "securePort" : "${securePort}",
+    "port": {
+      "$":${port},
+      "@enabled": true
+    },
+    "securePort": {
+      "$":${securePort},
+      "@enabled": true
+    },
     "homePageUrl" : "http://${ipAddress}:${port}/",
     "statusPageUrl": "http://${ipAddress}:${port}/info",
     "healthCheckUrl": "http://${ipAddress}:${port}/health",
     "dataCenterInfo" : {
+      "@class":"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
       "name": "MyOwn"
     },
     "metadata": {
