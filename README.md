@@ -2,7 +2,7 @@
 Simplistic Eureka client for Go Microservices
 
 ## What is is?
-I use this in my personal Microservice projects where I use Go-based microservices in a Spring Cloud context deployed on docker containers.
+I use this in my personal Microservice projects where I use Go-based microservices in a Spring Cloud context deployed on docker containers. It is not production tested, use at your own peril...
 
 Internally, it's basically wraps a little HTTP client for the following operations of the [Netflix Eureka REST API](https://github.com/Netflix/eureka/wiki/Eureka-REST-operations) :
 
@@ -46,3 +46,5 @@ Otherwise, use the _RegisterAt_ function.
 
 This lib has only been tested with the Spring Cloud flavour of Eureka. Internally, this lib uses the REST endpoints of Eureka which exists in two versions. With "/v2" or without. This lib is only tested with the non-v2 version.
 
+# License
+MIT License. See LICENSE.md

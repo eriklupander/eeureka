@@ -31,8 +31,15 @@ package eeureka
   The root is the EurekaServiceResponse which contains a single EurekaApplication, which in its turn contains an array
   of EurekaInstance instances.
 */
+
+// Response for /eureka/apps/{appName}
 type EurekaServiceResponse struct {
 	Application EurekaApplication `json:"application"`
+}
+
+// Response for /eureka/apps
+type EurekaApplicationsResponse struct {
+	Applications []EurekaApplication `json:"applications"`
 }
 
 type EurekaApplication struct {

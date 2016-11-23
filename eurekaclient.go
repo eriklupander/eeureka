@@ -117,7 +117,7 @@ func Register(appName string, port string, securePort string) {
  */
 func GetServiceInstances(appName string) ([]EurekaInstance, error) {
 	var m EurekaServiceResponse
-	fmt.Println("Querying eureka for services at: " + discoveryServerUrl + "/eureka/apps/" + appName)
+	fmt.Println("Querying eureka for instances of " + appName + " at: " + discoveryServerUrl + "/eureka/apps/" + appName)
 	queryAction := HttpAction{
 		Url:         discoveryServerUrl + "/eureka/apps/" + appName,
 		Method:      "GET",
@@ -129,13 +129,38 @@ func GetServiceInstances(appName string) ([]EurekaInstance, error) {
 	if err != nil {
 		return nil, err
 	} else {
-		fmt.Println("Got response from Eureka:\n" + string(bytes))
+		fmt.Println("Got instances response from Eureka:\n" + string(bytes))
 		err := json.Unmarshal(bytes, &m)
 		if err != nil {
 			fmt.Println("Problem parsing JSON response from Eureka: " + err.Error())
 			return nil, err
 		}
 		return m.Application.Instance, nil
+	}
+}
+
+// Experimental, untested.
+func GetServices() ([]EurekaApplication, error) {
+	var m EurekaApplicationsResponse
+	fmt.Println("Querying eureka for services at: " + discoveryServerUrl + "/eureka/apps")
+	queryAction := HttpAction{
+		Url:         discoveryServerUrl + "/eureka/apps",
+		Method:      "GET",
+		Accept:      "application/json;charset=UTF-8",
+		ContentType: "application/json;charset=UTF-8",
+	}
+	log.Println("Doing queryAction using URL: " + queryAction.Url)
+	bytes, err := executeQuery(queryAction)
+	if err != nil {
+		return nil, err
+	} else {
+		fmt.Println("Got services response from Eureka:\n" + string(bytes))
+		err := json.Unmarshal(bytes, &m)
+		if err != nil {
+			fmt.Println("Problem parsing JSON response from Eureka: " + err.Error())
+			return nil, err
+		}
+		return m.Applications, nil
 	}
 }
 
@@ -161,9 +186,9 @@ func deregister(appName string) {
 	fmt.Println("Trying to deregister application " + appName + "...")
 	// Deregister
 	deregisterAction := HttpAction{
-		Url:    discoveryServerUrl + "/eureka/apps/" + appName + "/" + getLocalIP(),
+		Url:         discoveryServerUrl + "/eureka/apps/" + appName + "/" + getLocalIP(),
 		ContentType: "application/json;charset=UTF-8",
-		Method: "DELETE",
+		Method:      "DELETE",
 	}
 	doHttpRequest(deregisterAction)
 	fmt.Println("Deregistered application " + appName + ", exiting. Check Eureka...")
